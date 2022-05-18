@@ -4,6 +4,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
 public class Student {
+	private String string = "";
 	private int id;
 	private String name,surname,sex,branch,registNumber;
 	public Student() {}
