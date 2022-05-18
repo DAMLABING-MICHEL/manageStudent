@@ -5,6 +5,7 @@ import javax.swing.JComboBox;
 
 public class Student {
 	private String string = "";
+	private int number;
 	private int id;
 	private String name,surname,sex,branch,registNumber;
 	public Student() {}
