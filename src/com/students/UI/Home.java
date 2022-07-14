@@ -8,11 +8,17 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -31,6 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -113,6 +120,7 @@ public class Home extends JFrame{
 		private JPanel submitPan = new JPanel();
 		private JLabel lbStudentList = new JLabel("liste des étudiants");
 		private JButton addButton = new JButton("Ajouter");
+		private JButton exportButton = new JButton("Exporter");
 		private JButton deleteButton = new JButton("Supprimer");
 		private JButton updateButton = new JButton("Modifier");
 		private HomeTableModel homeTableModel = new HomeTableModel();
@@ -261,6 +269,43 @@ public class Home extends JFrame{
 					}
 				}
 			});
+			exportButton.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser fc = new JFileChooser();
+					fc.setDialogTitle("spécifiez le fichier à enregistrer");
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel (.xls)", "xls");
+					fc.setFileFilter(filter);
+					fc.setSelectedFile(new File("export"));
+					int val = fc.showSaveDialog(ManageStudent.this);
+					if(val == JFileChooser.APPROVE_OPTION) {
+						File exportFile = fc.getSelectedFile();
+						if(!exportFile.getName().endsWith("xls")) {
+							exportFile = new File(exportFile.getAbsolutePath() +".xls");
+						}
+						try {
+							Excel excel = new Excel();
+							excel.exportTableToExcel(table, exportFile);
+//								FileWriter fw = new FileWriter(exportFile);
+//								BufferedWriter bw = new BufferedWriter(fw);
+//								for(int i=0;i<table.getRowCount();i++) {
+//									for(int j=0;j<table.getColumnCount();j++) {
+//										bw.write(table.getValueAt(i, j).toString());
+//									}
+//									bw.newLine();
+//								}
+//								bw.close();
+//								fw.close();
+							JOptionPane.showMessageDialog(ManageStudent.this, "SUSSCESSFULY LOAD", "INFORMATION", JOptionPane.INFORMATION_MESSAGE);
+
+						}catch(Exception ex) {
+							ex.printStackTrace();
+							JOptionPane.showMessageDialog(ManageStudent.this, "FAILED TO LOAD FILE!", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
 			deleteButton.setEnabled(false);
 			updateButton.setEnabled(false);
 			updateButton.addActionListener(new ActionListener() {
@@ -312,6 +357,7 @@ public class Home extends JFrame{
 				}
 			});
 			panButtons.add(addButton);
+			panButtons.add(exportButton);
 			panButtons.add(updateButton);
 			panButtons.add(deleteButton);
 			panTable.add(panTitle,BorderLayout.NORTH);
